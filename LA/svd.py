@@ -68,7 +68,7 @@ def svd_2x2_singular_values(A: np.ndarray) -> tuple:
     eigenvalues, eigenvectors = np.linalg.eigh(B)
     # eigenvector is orthogonal (symettric matriices have this prooperty)
     idx = np.argsort(eigenvalues)[::-1]
-    singular_values = np.sqrt(eigenvalues[idx]) # diag values
+    singular_values = np.sqrt(eigenvalues[idx])  # diag values
     V = eigenvectors[:, idx]
     V_tranpose = V.T
     # Compute U from A @ V / singular_values
@@ -84,9 +84,8 @@ def svd_2x2_singular_values(A: np.ndarray) -> tuple:
     return U, singular_values, V_tranpose
 
     # OR
-    # full_matrices=False only gives minimal size orthogonal maitrices 
+    # full_matrices=False only gives minimal size orthogonal maitrices
     # U, S, Vt = np.linalg.svd(A, full_matrices=False)
-
 
 
 if __name__ == "__main__":
