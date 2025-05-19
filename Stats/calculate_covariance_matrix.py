@@ -2,7 +2,8 @@
 # https://www.youtube.com/watch?v=NVzxBz-rlhw&t=111s
 import numpy as np
 import matplotlib.pyplot as plt
-'''
+
+"""
 Notes on covariance
 
 Corelation and covariance are very similary just that corelation is bounded between [-1,1] and covar isn't.
@@ -80,7 +81,8 @@ C	      180	        75
 So:
     Features = number of columns
     Observations = number of rows
-'''
+"""
+
 
 def calculate_covariance_matrix(vectors: list[list[float]]) -> list[list[float]]:
     cov_matrix = np.cov(vectors, bias=False)  # Unbiased estimator (N-1)
@@ -88,10 +90,12 @@ def calculate_covariance_matrix(vectors: list[list[float]]) -> list[list[float]]
 
 
 def calculate_covariance_matrix(vectors: list[list[float]]) -> list[list[float]]:
-    num_features = len(vectors) # features = rows
-    num_observations = len(vectors[0]) # observations = columns
+    num_features = len(vectors)  # features = rows
+    num_observations = len(vectors[0])  # observations = columns
+
     def mean(v):
-        return sum(v)/len(v)
+        return sum(v) / len(v)
+
     # calculating covariance
     means = [mean(feature) for feature in vectors]
     covar_matrix = [[0] * num_features for _ in range(num_features)]
@@ -102,6 +106,7 @@ def calculate_covariance_matrix(vectors: list[list[float]]) -> list[list[float]]
                 s += (vectors[i][k] - means[i]) * (vectors[j][k] - means[j])
             covar_matrix[i][j] = s / (num_observations - 1)
     return covar_matrix
+
 
 print(calculate_covariance_matrix([[1, 2, 3], [4, 5, 6]]))
 # Expected: [[1.0, 1.0], [1.0, 1.0]]
@@ -114,9 +119,9 @@ print(calculate_covariance_matrix([[1, 2, 3], [4, 5, 6]]))
 X = [1, 2, 3]
 Y = [4, 5, 6]
 
-plt.scatter(X, Y, color='blue')
+plt.scatter(X, Y, color="blue")
 plt.title("Feature X vs Feature Y")
 plt.xlabel("X")
 plt.ylabel("Y")
 plt.grid(True)
-plt.show() # pos variance -> upwards line
+plt.show()  # pos variance -> upwards line
