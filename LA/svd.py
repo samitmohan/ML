@@ -59,6 +59,11 @@ So SVD gives us another point of view at the data,
     where data is most distributed along (usually several) first axes
 
 ui = normalise A
+Helps understand the geometric transformation of any matrix
+
+Rotate -> Scale/Stretch
+Using numpy (full_matrices=False only gives minimal size orthogonal maitrices)
+U, S, Vt = np.linalg.svd(A, full_matrices=False)
 """
 
 
@@ -71,21 +76,19 @@ def svd_2x2_singular_values(A: np.ndarray) -> tuple:
     singular_values = np.sqrt(eigenvalues[idx])  # diag values
     V = eigenvectors[:, idx]
     V_tranpose = V.T
-    # Compute U from A @ V / singular_values
-    U = np.zeros_like(A, dtype=float)
-    for i in range(len(singular_values)):
-        if singular_values[i] > 0:
-            u_i = A @ V[:, i]
-            U[:, i] = u_i / singular_values[i]
+    # Compute Ui from A @ Vi / singular_values
+    U_columns = []
+    for sigma, v_i in zip(singular_values, V.T):
+        if sigma > 0:
+            u_i = A @ v_i
+            U_columns.append(u_i / sigma)
         else:
-            # Fill with an orthogonal vector to the first column
-            U[:, i] = np.array([-U[1, 0], U[0, 0]])
-    # ans = U @ sigma @ V_tranpose
-    return U, singular_values, V_tranpose
+            # Orthogonal to the first column
+            u_orth = np.array([-U_columns[0][1], U_columns[0][0]])
+            U_columns.append(u_orth)
 
-    # OR
-    # full_matrices=False only gives minimal size orthogonal maitrices
-    # U, S, Vt = np.linalg.svd(A, full_matrices=False)
+    U = np.column_stack(U_columns)  # build matrix from U_columns
+    return U, singular_values, V_tranpose
 
 
 if __name__ == "__main__":
