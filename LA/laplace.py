@@ -39,7 +39,7 @@ def determinant_4x4(matrix: list[list[int | float]]) -> float:
     total = 0
     for j in range(len(matrix[0])):
         sign = (-1) ** (0 + j)
-        sub_minor = minor(matrix, 0, j) # first row minors
+        sub_minor = minor(matrix, 0, j)  # first row minors
         total += sign * matrix[0][j] * determinant_4x4(sub_minor)
     return total
 
