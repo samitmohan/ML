@@ -34,6 +34,17 @@ def linear_regression_normal_equation(
     return np.round(theta, 4).tolist()
 
 
+# https://www.youtube.com/watch?v=sDv4f4s2SB8
+"""
+Take derivative of loss function wrt all parameters (slope, intercept) -> basically taking the gradient of LF
+Pick random val for parameters
+S3: Plug parameter values into gradient (derivatives)
+Calculate step size = slope * learning rate
+Calculate new parameters = old_parameter - step_size
+Repeat S3
+"""
+
+
 def linear_regression_gradient_descent(
     X: np.ndarray, y: np.ndarray, alpha: float, iterations: int
 ) -> np.ndarray:
@@ -48,7 +59,7 @@ def linear_regression_gradient_descent(
     # update parameters: m = m - alpha (partial deriv wrt m), c = c - alpha (partial deriv wrt c)
     """
     m, n = X.shape
-    theta = np.zeros(n)
+    theta = np.zeros(n)  # slope
     for _ in range(iterations):
         y_pred = X @ theta
         error = y_pred - y
