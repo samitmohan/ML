@@ -1,4 +1,6 @@
 import numpy as np
+from sklearn.cluster import KMeans
+
 # https://www.deep-ml.com/problems/17
 """
 How to pick K? Random try and compare variation with prev k value. Huge reduction in variation = k, after that there is less reduction (as u increase k clusters)
@@ -40,12 +42,19 @@ Centroids are shifted to be the average value of the points belonging to it. If 
 
 """
 
+
 def euclid_distance(x, y):
     x_arr = np.array(x)
     y_arr = np.array(y)
-    return np.sqrt(np.sum((x_arr - y_arr)**2))
+    return np.sqrt(np.sum((x_arr - y_arr) ** 2))
 
-def k_means_clustering( points: list[tuple[float, float]], k: int, initial_centroids: list[tuple[float, float]], max_iterations: int,) -> list[tuple[float, float]]:
+
+def k_means_clustering(
+    points: list[tuple[float, float]],
+    k: int,
+    initial_centroids: list[tuple[float, float]],
+    max_iterations: int,
+) -> list[tuple[float, float]]:
     points = np.array(points, dtype=float)
     centroids = np.array(initial_centroids, dtype=float)
 
@@ -78,8 +87,40 @@ def k_means_clustering( points: list[tuple[float, float]], k: int, initial_centr
     return final
 
 
+"""
+using scikit learn
+"""
+
+
+def k_means_clustering_sklearn(
+    points: list[tuple[float, float]],
+    k: int,
+    initial_centroids: list[tuple[float, float]],
+    max_iterations: int,
+) -> list[tuple[float, float]]:
+    kmeans = KMeans(n_clusters=k, random_state=0)
+    kmeans.fit(points)
+    return kmeans.cluster_centers_
+
+
 def main():
-    print( k_means_clustering( points=[(1, 2), (1, 4), (1, 0), (10, 2), (10, 4), (10, 0)], k=2, initial_centroids=[(1, 1), (10, 1)], max_iterations=10,))
-    print(k_means_clustering([(0, 0, 0), (2, 2, 2), (1, 1, 1), (9, 10, 9), (10, 11, 10), (12, 11, 12)], 2, [(1, 1, 1), (10, 10, 10)], 10))
+    print(
+        k_means_clustering(
+            points=[(1, 2), (1, 4), (1, 0), (10, 2), (10, 4), (10, 0)],
+            k=2,
+            initial_centroids=[(1, 1), (10, 1)],
+            max_iterations=10,
+        )
+    )
+    print(
+        k_means_clustering_sklearn(
+            points=[(1, 2), (1, 4), (1, 0), (10, 2), (10, 4), (10, 0)],
+            k=2,
+            initial_centroids=[(1, 1), (10, 1)],
+            max_iterations=10,
+        )
+    )
+    # print(k_means_clustering([(0, 0, 0), (2, 2, 2), (1, 1, 1), (9, 10, 9), (10, 11, 10), (12, 11, 12)], 2, [(1, 1, 1), (10, 10, 10)], 10))
+
 
 main()
