@@ -49,12 +49,7 @@ def euclid_distance(x, y):
     return np.sqrt(np.sum((x_arr - y_arr) ** 2))
 
 
-def k_means_clustering(
-    points: list[tuple[float, float]],
-    k: int,
-    initial_centroids: list[tuple[float, float]],
-    max_iterations: int,
-) -> list[tuple[float, float]]:
+def k_means_clustering( points: list[tuple[float, float]], k: int, initial_centroids: list[tuple[float, float]], max_iterations: int,) -> list[tuple[float, float]]:
     points = np.array(points, dtype=float)
     centroids = np.array(initial_centroids, dtype=float)
 
@@ -92,12 +87,7 @@ using scikit learn
 """
 
 
-def k_means_clustering_sklearn(
-    points: list[tuple[float, float]],
-    k: int,
-    initial_centroids: list[tuple[float, float]],
-    max_iterations: int,
-) -> list[tuple[float, float]]:
+def k_means_clustering_sklearn( points: list[tuple[float, float]], k: int, initial_centroids: list[tuple[float, float]], max_iterations: int,) -> list[tuple[float, float]]:
     kmeans = KMeans(n_clusters=k, random_state=0)
     kmeans.fit(points)
     return kmeans.cluster_centers_
