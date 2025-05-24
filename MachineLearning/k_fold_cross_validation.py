@@ -1,4 +1,5 @@
 # https://www.deep-ml.com/problems/18
+# https://aman.ai/primers/ai/cross-validation/
 
 import numpy as np
 
