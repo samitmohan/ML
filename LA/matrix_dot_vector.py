@@ -1,9 +1,7 @@
 # https://www.deep-ml.com/problems/1
 
 
-def matrix_dot_vector(
-    a: list[list[int | float]], b: list[int | float]
-) -> list[int | float]:
+def matrix_dot_vector(a: list[list[int | float]], b: list[int | float]) -> list[int | float]:
     # num(col) of matrix == len of vector
     if len(a) == 0 or len(a[0]) != len(b):
         return -1
