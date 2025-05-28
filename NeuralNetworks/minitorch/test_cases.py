@@ -1,9 +1,8 @@
-import torch
-from tinygrad.engine import Value
+from tensor import Tensor
 
 
 def test_check():
-    a = Value(-4.0)
+    a = Tensor(-4.0)
     b = 2 * a + 2 + a
     c = b.tanh() + b * a
     d = (b * b).tanh()
@@ -12,7 +11,7 @@ def test_check():
     x_tinygrad, y_tinygrad = a, e
 
     # Doing the same with pytorch
-    a = torch.Tensor([-4.0]).double()
+    a = Tensor([-4.0]).double()
     a.requires_grad = True
     b = 2 * a + 2 + a
     c = b.tanh() + b * a
