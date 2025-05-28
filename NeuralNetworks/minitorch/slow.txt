@@ -1,0 +1,23 @@
+Whenever you compare MiniTorch’s Python‐level autograd engine to raw NumPy or PyTorch, the overhead of building and traversing a dynamic graph in pure Python becomes the bottleneck. Here’s a breakdown of the main reasons:
+	1.	Graph Construction & Closure Overhead
+	•	Every operation (+, @, sum, etc.) creates a new Tensor, allocates a Python closure for _backward, and links to parent nodes.
+	•	These allocations and Python‐level function calls (on the order of hundreds or thousands per forward/backward pass) are much slower than a single vectorized C‐call.
+	2.	Backward Pass in Python
+	•	MiniTorch’s .backward() does a topological sort and then iterates node by node, calling each node’s _backward() closure in pure Python.
+	•	Even though the heavy lifting (e.g. np.dot, broadcasting) is in C, the loop and function dispatch are not.
+	3.	No Fused Kernels or Multi‐Threading
+	•	PyTorch uses highly optimized, multi‐threaded BLAS/cuBLAS kernels, and often fuses several operations into one GPU/CPU kernel to reduce memory traffic.
+	•	NumPy’s single C‐calls (e.g. a @ b) are already faster because there’s no Python graph, and they’re often threaded internally. MiniTorch does many C‐calls, but each wrapped in Python.
+	4.	Small Problem Size Amplifies Overhead
+	•	On a toy dataset of 100 samples and 100 epochs, the actual matrix multiplies are tiny—so the Python overhead dominates.
+	•	If you scale up to larger batches or deeper networks, the relative overhead of graph management shrinks (though it never matches a C++ engine).
+
+What You Can Do to Speed It Up
+	•	Minimize Python‐level dispatch
+	•	Fuse sequences of ops into single methods (e.g. combine x@W + b into one wrapper).
+	•	Cache intermediate shapes or reuse pre‐allocated arrays rather than allocating new ones each time.
+	•	Reduce Closure Allocations
+	•	Predefine backward functions for common patterns instead of building new closures each forward pass.
+	•	Record your graph once, then replay it multiple times without reconstructing closures (akin to TorchScript or TensorFlow).
+
+TODO : Cython, opcode-dispatch, fused kernels

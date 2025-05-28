@@ -78,9 +78,6 @@ pip install torch
 
 Inspired by karpathy and george hotz.
 
-TODO : Figure out how to switch to numpy C matrix calculations to make it faster.
-Add more functions
-
 ## License
 
 MIT
