@@ -1,0 +1,39 @@
+# .gitignore
+
+# macOS specific
+.DS_Store
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Large data files - BE SPECIFIC!
+NeuralNetworks/ImageClassifier/data/MNIST/raw/t10k-images-idx3-ubyte
+NeuralNetworks/ImageClassifier/data/MNIST/raw/t10k-images-idx3-ubyte.gz
+NeuralNetworks/ImageClassifier/data/MNIST/raw/train-images-idx3-ubyte
+NeuralNetworks/ImageClassifier/data/MNIST/raw/train-images-idx3-ubyte.gz
+# Or, more generally if you have many such files in that dir:
+# NeuralNetworks/ImageClassifier/data/MNIST/raw/*
+
+# Model files
+NeuralNetworks/ImageClassifier/model_state.pt
+# Or, more generally:
+# *.pt
+# *.pth
+# *.h5
+# *.onnx
+
+# Other potential large files or build artifacts
+# build/
+# dist/
+# *.data
