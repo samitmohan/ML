@@ -33,6 +33,7 @@ NeuralNetworks/MNIST_Pytorch/sample_digit.jpg # Explicit path if it's there
 __pycache__/
 *.pyc
 .ipynb_checkpoints/ # For Jupyter/Colab notebooks
+.ruff_cache
 .DS_Store # macOS specific
-venv/     # Your Python virtual environment folder
+.venv/     # Your Python virtual environment folder
 .vscode/  # VS Code config (if personal and not for repo)
