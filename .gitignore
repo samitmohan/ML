@@ -6,6 +6,7 @@ model_state.pt
 # Raw MNIST dataset files (.gz files are large)
 # Use specific paths since 'data/' can be nested
 # Adjust 'NeuralNetworks/MNIST_Pytorch/' prefix if .gitignore is higher up
+NeuralNetworks/MNIST_Pytorch/data/MNIST/raw/
 NeuralNetworks/MNIST_Pytorch/data/MNIST/raw/t10k-images-idx3-ubyte.gz
 NeuralNetworks/MNIST_Pytorch/data/MNIST/raw/t10k-labels-idx1-ubyte.gz
 NeuralNetworks/MNIST_Pytorch/data/MNIST/raw/train-images-idx3-ubyte.gz
