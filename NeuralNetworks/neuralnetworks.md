@@ -425,10 +425,10 @@ ki = ki - learning_rate * [partial(L) / partial(k1)]
 After each adjustment we need to redo forward and backward passes since the loss functions have changed.
 
 Performing this loop of:
-    1) Forward Pass
-    2) Backward Pass
-    3) Nudge knobs
-    4) Repeat 1-3
+    - Forward Pass
+    - Backward Pass
+    - Nudge knobs
+    - Repeat 1-3
 is the essence of training modern machine system.
 As long as your fancy model can be decomposed as a sequence of differentiable functions, you can apply backprop to optimise the parameters.
 

@@ -11,7 +11,7 @@ IMAGE_SIZE = 28
 NUM_CLASSES = 10
 BATCH_SIZE = 32 
 LEARNING_RATE = 0.001 
-NUM_EPOCHS = 30
+NUM_EPOCHS = 10
 MODEL_STATE_FILENAME = "model_state.pt"
 
 transform = Compose([
