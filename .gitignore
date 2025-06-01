@@ -1,39 +1,38 @@
-# .gitignore
+# PyTorch model state files
+model_state.pt
+*.pt
+*.pth
 
-# macOS specific
-.DS_Store
+# Raw MNIST dataset files (.gz files are large)
+# Use specific paths since 'data/' can be nested
+# Adjust 'NeuralNetworks/MNIST_Pytorch/' prefix if .gitignore is higher up
+NeuralNetworks/MNIST_Pytorch/data/MNIST/raw/t10k-images-idx3-ubyte.gz
+NeuralNetworks/MNIST_Pytorch/data/MNIST/raw/t10k-labels-idx1-ubyte.gz
+NeuralNetworks/MNIST_Pytorch/data/MNIST/raw/train-images-idx3-ubyte.gz
+NeuralNetworks/MNIST_Pytorch/data/MNIST/raw/train-labels-idx1-ubyte.gz
 
-# Python virtual environments
-.venv/
-venv/
-env/
+# Older dataset file from the Scratch project
+NeuralNetworks/MNIST_Scratch/data/mnist.pkl.gz
 
-# Python caches
+# Sample images (if you don't want them in Git)
+sample_digit.jpg # This is relative to the *repo root*
+NeuralNetworks/MNIST_Pytorch/sample_digit.jpg # Explicit path if it's there
+*.jpg
+*.png
+
+# Other common large files you might want to exclude
+*.zip
+*.rar
+*.7z
+*.bin
+*.npy # NumPy arrays can get large
+*.csv # Large CSVs
+*.log # Log files
+
+# --- Standard Python and IDE ignores ---
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-
-# Jupyter Notebook checkpoints
-.ipynb_checkpoints/
-
-# Large data files - BE SPECIFIC!
-NeuralNetworks/ImageClassifier/data/MNIST/raw/t10k-images-idx3-ubyte
-NeuralNetworks/ImageClassifier/data/MNIST/raw/t10k-images-idx3-ubyte.gz
-NeuralNetworks/ImageClassifier/data/MNIST/raw/train-images-idx3-ubyte
-NeuralNetworks/ImageClassifier/data/MNIST/raw/train-images-idx3-ubyte.gz
-# Or, more generally if you have many such files in that dir:
-# NeuralNetworks/ImageClassifier/data/MNIST/raw/*
-
-# Model files
-NeuralNetworks/ImageClassifier/model_state.pt
-# Or, more generally:
-# *.pt
-# *.pth
-# *.h5
-# *.onnx
-
-# Other potential large files or build artifacts
-# build/
-# dist/
-# *.data
+.ipynb_checkpoints/ # For Jupyter/Colab notebooks
+.DS_Store # macOS specific
+venv/     # Your Python virtual environment folder
+.vscode/  # VS Code config (if personal and not for repo)
