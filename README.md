@@ -1,1 +1,1 @@
-Solutions for -> [DeepML](https://www.deep-ml.com/problems/) + Learning deep learning/ml from scratch (algorithms)
+Solutions for [DeepML](https://www.deep-ml.com/problems/) + Learning deep learning/ml from scratch (algorithms)
