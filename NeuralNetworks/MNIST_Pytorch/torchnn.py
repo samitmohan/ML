@@ -5,6 +5,7 @@ from torch.optim import Adam
 from torch.utils.data import DataLoader
 from torchvision import datasets
 from torchvision.transforms import ToTensor, Normalize, Compose 
+import matplotlib.pyplot as plt
 from pathlib import Path
 
 IMAGE_SIZE = 28
@@ -89,14 +90,21 @@ def evaluate_model(model, data_loader, device, epoch=None):
     epoch_str = f"Epoch {epoch}: " if epoch is not None else ""
     print(f"{epoch_str}Test Accuracy: {accuracy:.2f}% ({correct}/{total})")
     model.train() # set model back to training mode if it's being used in a loop
+    return accuracy
 
 if __name__ == "__main__":
     model_save_path = Path.cwd() / MODEL_STATE_FILENAME
+    loss_list = []
+    accuracy_list = []
+    epochs_ran = []
+
     if model_save_path.exists():
         print(f"Loading pre-trained model from {model_save_path}")
         clf.load_state_dict(load(model_save_path))
         clf.eval()
         print("Model loaded. Skipping training for now.")
+        final_accuracy = evaluate_model(clf, test_loader, device)
+        print(f"Final Test Accuracy: {final_accuracy:.2f}%")
     else:
         print("No pre-trained model found. Starting training...")
         clf.train() 
@@ -116,12 +124,33 @@ if __name__ == "__main__":
 
             avg_loss_per_epoch = current_loss / len(train_loader)
             print(f"Epoch {epoch} loss: {avg_loss_per_epoch:.4f}")
-
-        evaluate_model(clf, test_loader, device, epoch) # accuracy
+            # collect metrics
+            loss_list.append(avg_loss_per_epoch)
+            accuracy = evaluate_model(clf, test_loader, device, epoch)
+            accuracy_list.append(accuracy)
+            epochs_ran.append(epoch)
 
         with open(model_save_path, "wb") as f:
             save(clf.state_dict(), f)
         print(f"Model state saved to {model_save_path}")
 
+        # Plot Loss
+        plt.subplot(1, 2, 1) 
+        plt.plot(epochs_ran, loss_list, marker='o', linestyle='-', color='blue')
+        plt.title('Training Loss per Epoch')
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')
+        plt.grid(True)
+
+        # Plot Accuracy
+        plt.subplot(1, 2, 2) 
+        plt.plot(epochs_ran, accuracy_list, marker='o', linestyle='-', color='red')
+        plt.title('Test Accuracy per Epoch')
+        plt.xlabel('Epoch')
+        plt.ylabel('Accuracy (%)')
+        plt.grid(True)
+
+        plt.tight_layout() 
+        plt.show() 
     sample_image_path = Path(__file__).parent / "sample_digit.jpg"
     predict(clf, sample_image_path, device)

@@ -103,9 +103,11 @@ w1a1+w2a2+w3a3+w4a4+⋯+wnan
 w1​a1​+w2​a2​+w3​a3​+w4​a4​+⋯+wn​an​
 
 So maybe first layer picks up on the edges -> Second layer picks up on the patterns -> Final layer actually knows what number we have as input.
-So how does it learn?
+So how does it learn? Whole point of training the model is that it can make the error as minimum as possible -> How does it do that?
 
 # Gradient Descent
+Instead of shiffting weights and calculating errors again and again (expensive) we can figure out the slope directly and can figure the direction we need to adjust our weight without going all the way back to our nerual network and calculating
+slope? relation of change in weight and change in error : mathematically de/dw : change in error when i change the weight (basics calculus)
 Neural Network
     Input: 784 numbers / pixels
     Output: 10 numbers
@@ -142,6 +144,7 @@ But what's really exciting about the equation is that it lets us see how to choo
 Δw = −η * ∇C
 where η is a small, positive parameter (known as the learning rate).
 Then we'll use this update rule again, to make another move. If we keep doing this, over and over, we'll keep decreasing C until - we hope - we reach a global minimum (bottom of the bowl) *insert bowl image here*
+The magnitude of the update is proportional to the error term.
 
 So gradient descent can be viewed as a way of taking small steps in the direction which does the most to immediately decrease C.
 
@@ -433,6 +436,47 @@ is the essence of training modern machine system.
 As long as your fancy model can be decomposed as a sequence of differentiable functions, you can apply backprop to optimise the parameters.
 
 
+### More about backprop
+Four equations: heavy on the math side but this is a great resource if you want to dive deep into the math behind [backprop](https://neuralnetworksanddeeplearning.com/chap2.html)
+Why is it fast?
+In what sense is backpropagation a fast algorithm? To answer this question, let's consider another approach to computing the gradient. Imagine it's the early days of neural networks research. Maybe it's the 1950s or 1960s, and you're the first person in the world to think of using gradient descent to learn! But to make the idea work you need a way of computing the gradient of the cost function. You think back to your knowledge of calculus, and decide to see if you can use the chain rule to compute the gradient. But after playing around a bit, the algebra looks complicated, and you get discouraged. So you try to find another approach. You decide to regard the cost as a function of the weights C=C(w) alone (we'll get back to the biases in a moment). You number the weights w1,w2,…, and want to compute ∂C/∂wj for some particular weight wj. An obvious way of doing that is to use the approximation
+∂C∂wj≈C(w+ϵej)−C(w)ϵ,(46)
+where ϵ>0 is a small positive number, and ej is the unit vector in the jth direction. In other words, we can estimate ∂C/∂wj by computing the cost C for two slightly different values of wj, and then applying Equation (46). The same idea will let us compute the partial derivatives ∂C/∂b
+
+with respect to the biases.
+
+This approach looks very promising. It's simple conceptually, and extremely easy to implement, using just a few lines of code. Certainly, it looks much more promising than the idea of using the chain rule to compute the gradient!
+
+Unfortunately, while this approach appears promising, when you implement the code it turns out to be extremely slow. To understand why, imagine we have a million weights in our network. Then for each distinct weight wj
+we need to compute C(w+ϵej) in order to compute ∂C/∂wj. That means that to compute the gradient we need to compute the cost function a million different times, requiring a million forward passes through the network (per training example). We need to compute C(w)
+
+as well, so that's a total of a million and one passes through the network.
+
+What's clever about backpropagation is that it enables us to simultaneously compute all the partial derivatives ∂C/∂wj
+using just one forward pass through the network, followed by one backward pass through the network. Roughly speaking, the computational cost of the backward pass is about the same as the forward pass* *This should be plausible, but it requires some analysis to make a careful statement. It's plausible because the dominant computational cost in the forward pass is multiplying by the weight matrices, while in the backward pass it's multiplying by the transposes of the weight matrices. These operations obviously have similar computational cost.. And so the total cost of backpropagation is roughly the same as making just two forward passes through the network. Compare that to the million and one forward passes we needed for the approach based on (46)! And so even though backpropagation appears superficially more complex than the approach based on (46), it's actually much, much faster.
+
+So what does the backprop really do?
+let's imagine that we've made a small change Δwljk to some weight in the network, wljk: 
+That change in weight will cause a change in the output activation from the corresponding neuron: 
+That, in turn, will cause a change in all the activations in the next layer: 
+Those changes will in turn cause changes in the next layer, and then the next, and so on all the way through to causing a change in the final layer, and then in the cost function: 
+
+The change ΔC in the cost is related to the change Δwljk in the weight by the equation
+ΔC≈∂C∂wljkΔwljk.(47)
+This suggests that a possible approach to computing ∂C∂wljk is to carefully track how a small change in wljk propagates to cause a small change in C. If we can do that, being careful to express everything along the way in terms of easily computable quantities, then we should be able to compute ∂C/∂wljk.
+
+
+Let's try to carry this out. The change Δwljk causes a small change Δalj in the activation of the jth neuron in the lth layer. This change is given by
+Δalj≈∂alj∂wljkΔwljk.(48)
+The change in activation Δalj will cause changes in all the activations in the next layer, i.e., the (l+1)th layer. We'll concentrate on the way just a single one of those activations is affected, say al+1q, 
+
+We're computing the rate of change of C with respect to a weight in the network. What the equation tells us is that every edge between two neurons in the network is associated with a rate factor which is just the partial derivative of one neuron's activation with respect to the other neuron's activation. The edge from the first weight to the first neuron has a rate factor ∂alj/∂wljk. The rate factor for a path is just the product of the rate factors along the path. And the total rate of change ∂C/∂wljk is just the sum of the rate factors of all paths from the initial weight to the final cost
+
+backpropagation algorithm as providing a way of computing the sum over the rate factor for all these paths. Or, to put it slightly differently, the backpropagation algorithm is a clever way of keeping track of small perturbations to the weights (and biases) as they propagate through the network, reach the output, and then affect the cost.
+
+
+
+
 ### Time for some code
 We have gathered enough theory to build our own program that correctly identifies number from handwritten images. This is the hello world of neural networks.
 
@@ -519,10 +563,16 @@ Network Output Activations (probability for each digit 0-9):
 Predicted digit: 9
 
 ### MNIST from MiniTorch (my own implementation of pytorch)
+You can see the project here: [MiniTorch](https://samitmohan.github.io/minitorch)
 *insert code here*
 
 ### Comparing Accuracy across these.
 Pytorch clearly wins.
+
+Also loss vs accuracy graph:
+*insert image here*
+
+Makes sense, loss goes down and accuracy of the model goes up over time.
 
 ## References
 [3Blue1Brown](https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
@@ -530,8 +580,6 @@ Pytorch clearly wins.
 [Karpathy](https://www.youtube.com/watch?v=VMj-3S1tku0)
 [StatQuest](https://www.youtube.com/playlist?list=PLblh5JKOoLUIxGDQs4LFFD--41Vzf-ME1)
 Books : MLforStatQuest, Why Machines Learn, Grokking Deep Learning, Deep Learning with Python, [Michael Nelson](https://neuralnetworksanddeeplearning.com/)
-Code: MNIST (Pytorch, MiniTorch, Scratch(Numpy)) + What is minitorch
-
 
 ## Conclusion
 
