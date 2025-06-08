@@ -77,6 +77,9 @@ sigmoid(weights * activation + bias) = sigmoid([x]
                                                [y]
                                                [z])
 
+We apply activation function to make it more interesting (rather than just a linear model)
+Softmax : Find probability of every output 
+
 Neuron is just a function that takes output of all neurons in prevs layer and spits out number between 0-1
 Also no one uses sigmoid anymore. People use RELU = max(0, a) : just works better
 
@@ -118,6 +121,8 @@ Define Cost function:
 Input 3: output: grey and white colors on multiple neurons (1-9)
     What you gave me is utter trash (prediction), i need the output to be 3 {actual}
     Cost : square of mean error (MSE) : (actual - prediction) ** 2
+    Why do we square it? Because we are taking average of this cost function and sometimes mean/average might have pos and neg values which cancel out giving the illusion that cost function is minimum when it's actually not.
+        Hence we square this so it works.
         This is large when network doesn't seem to know what its doing and small when its close to 3. So this should work.
     Average cost of all training data : Measure of how lousy the network is.
 
@@ -147,6 +152,12 @@ Then we'll use this update rule again, to make another move. If we keep doing th
 The magnitude of the update is proportional to the error term.
 
 So gradient descent can be viewed as a way of taking small steps in the direction which does the most to immediately decrease C.
+Lets say you're at a hill and you want to go from one village to the other. And all you can see are paths.
+We can standa at the edge of the terrace and look for the steepest route to the terrace below.
+Thats also the shortest path down to the next piece of level ground, if we repeat the process from terrace to terrace we will evntually reach the village.
+In doing so we will have taken the path of steepest descent (might not be a straight line, can be zig zag)
+What we did was evaluate the slope/gradeint of the hillside as we looked in differnt directions while standing at the edge of a terrace and then took the steepest path down each time.
+This is gradient Descent.
 
 Which direction decreases C(x, y) most quickly? Here x, y is weights and bias
 Gradient of function gives you direction of steepest increase (which dirn should you step to increase fn most quickly)
@@ -157,6 +168,7 @@ Algorithm:
     Take small step in -G(C) direction.
     Repeat.
 
+** Code for gradient Descent **
 
 You'll get G(C(Weights)) and G(C(Bias)) -> Now update your inital weight and biases by:
     weights -= G(C(weights))
@@ -595,3 +607,19 @@ Classyfying Images or Generating Texts (GPT) uses these ideas at the core.
 Neural networks are the base for understanding AI. Transformers, Attention and all cutting edge AI papers are based on this simple key idea of y = mx + c and how to find the slope and intercept of this line in order to minimise our loss. It's so interesting to see that behind these complicated ideas it's just high school math and common sense. I spent the weekend reading these resources and writing code and it felt so nice to be back in touch with school math (although I was never good at it) and discover AI from first principles (perceptrons) I was going to write a section about attention and transformers but that is a blog for another time, this is a heavy read as it is ;)
 
 Code for all of this can be found here -> github link (MNIST)
+
+# Problem with Gradient Descent 
+## Vanishing Gradient Problem
+
+Activation Functions:
+
+
+    sigmoid or tanh, ReLU doesn't saturate for positive inputs, which helps gradients flow better during backpropagation.
+
+### Dead Neuron Problem
+Negative Input: If the weighted sum of inputs to a ReLU neuron (before applying the activation function) is negative, the ReLU function will output 0.
+Zero Gradient: When the output is 0, the derivative of the ReLU function with respect to its input is also 0. During backpropagation, the gradient of the loss with respect to the neuron's weights and biases is calculated by multiplying the upstream gradient with the local gradient. If the local gradient is 0, then the gradients for the weights and biases connected to this neuron become 0.
+No Weight Updates: If the gradients are 0, the weights and biases of that neuron will not be updated during subsequent training iterations.
+Permanent Inactivity: This means the neuron is effectively "dead." It will always output 0, regardless of the input, and it will never learn or contribute to the network's learning process. It's stuck in an inactive state.
+
+Solution to this? Leaky RELU : For pos : x , For Negative instead of 0, use alpha * x ( alpha is a small positive constant)
