@@ -608,12 +608,16 @@ Neural networks are the base for understanding AI. Transformers, Attention and a
 
 Code for all of this can be found here -> github link (MNIST)
 
+
 # Problem with Gradient Descent 
 ## Vanishing Gradient Problem
+So what happens when you backprop? You are essentially using an activation function (sigmoid/tanh) to squash numbers between 0 to 1 and then using chain rule multiply them to achieve
+backpropagation. 
 
-Activation Functions:
+If you have multiple layers are you're doing this -> The value at which the initail weights learn (by the time it gets there) becomes close to 0 so they don't end up learning.
+Solution : Use RELU (also suffers from dying ReLU leading to Dead Neuron) or leaky ReLU
 
-
+Activation Functions: We use activation functions to introduce non linearility in data otherwise every data is just a bunch of matrices dependendt on other layer data.
     sigmoid or tanh, ReLU doesn't saturate for positive inputs, which helps gradients flow better during backpropagation.
 
 ### Dead Neuron Problem
