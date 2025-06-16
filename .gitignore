@@ -8,6 +8,7 @@ model_state.pt
 # Adjust 'NeuralNetworks/MNIST_Pytorch/' prefix if .gitignore is higher up
 NeuralNetworks/MNIST_Pytorch/data/MNIST/raw/
 NeuralNetworks/MNIST_Scratch/data/mnist.pkl.gz
+/data/
 
 # Sample images (if you don't want them in Git)
 sample_digit.jpg # This is relative to the *repo root*
