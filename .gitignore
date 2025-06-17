@@ -1,12 +1,11 @@
-# PyTorch model state files
-model_state.pt
+/.venv/
+/data/
+Resnet/data/
 *.pt
 *.pth
 
 NeuralNetworks/MNIST_Pytorch/data/MNIST/raw/
 NeuralNetworks/MNIST_Scratch/data/mnist.pkl.gz
-Resnet/data/
-/data/
 
 # Sample images (if you don't want them in Git)
 sample_digit.jpg # This is relative to the *repo root*
@@ -29,5 +28,4 @@ __pycache__/
 .ipynb_checkpoints/ # For Jupyter/Colab notebooks
 .ruff_cache
 .DS_Store # macOS specific
-.venv/     # Your Python virtual environment folder
 .vscode/  # VS Code config (if personal and not for repo)
