@@ -9,6 +9,7 @@ model_state.pt
 NeuralNetworks/MNIST_Pytorch/data/MNIST/raw/
 NeuralNetworks/MNIST_Scratch/data/mnist.pkl.gz
 /data/
+Resnet/data/
 
 # Sample images (if you don't want them in Git)
 sample_digit.jpg # This is relative to the *repo root*
