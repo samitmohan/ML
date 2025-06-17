@@ -3,13 +3,10 @@ model_state.pt
 *.pt
 *.pth
 
-# Raw MNIST dataset files (.gz files are large)
-# Use specific paths since 'data/' can be nested
-# Adjust 'NeuralNetworks/MNIST_Pytorch/' prefix if .gitignore is higher up
 NeuralNetworks/MNIST_Pytorch/data/MNIST/raw/
 NeuralNetworks/MNIST_Scratch/data/mnist.pkl.gz
-/data/
 Resnet/data/
+/data/
 
 # Sample images (if you don't want them in Git)
 sample_digit.jpg # This is relative to the *repo root*
