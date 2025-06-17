@@ -1,0 +1,14 @@
+# OS files
+.DS_Store
+
+# Virtual env
+venv/
+env/
+ENV/
+
+data/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+
