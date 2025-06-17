@@ -1,4 +1,4 @@
-Learning Resnet + Implementation of [Deep Residual Learning for Image Recognition[(https://arxiv.org/abs/1512.03385) Paper.
+Learning Resnet + Implementation of [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385) Paper.
 
 Includes
 - Pytorch implementation
