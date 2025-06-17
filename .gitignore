@@ -3,9 +3,8 @@
 Resnet/data/
 *.pt
 *.pth
-
-NeuralNetworks/MNIST_Pytorch/data/MNIST/raw/
-NeuralNetworks/MNIST_Scratch/data/mnist.pkl.gz
+NeuralNetworks/MNIST/MNIST_Pytorch/data/
+NeuralNetworks/MNIST_Scratch/data/
 
 # Sample images (if you don't want them in Git)
 sample_digit.jpg # This is relative to the *repo root*
