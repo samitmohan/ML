@@ -97,3 +97,27 @@ But we also want channel dimensions to also match between input and output.
 We do this using 1 * 1 convulation layer (one pixel matching) 
 Output block = same ht and wdth as input block AND each of the neurons in output will get it's input from just 1 pixel from input
 BUT it will get inputs from the entire depth of that pixel's channel.
+
+
+---
+## BottleNeck
+In Resnets there are two kinds of residual blocks
+- Basic Block (Used in Resnet18,34)
+- Bottlneck (Used in Resnet50,101)
+
+It's designed to reduce cost of deep network by 'squeezing' (bottlenecking) number of channels before doing the expensive 3x3 convolution and then unsqueezing back.
+- 1x1 conv reduces channel dimension from Cin to Cmid = Cn/4
+- 3x4 conv on reduced Cmid channels to Cout = Cin * expansion
+
+(Resnet50 has expansion factor 4)
+
+The 1×1 “squeeze” reduces channels → far fewer multiplications in the 3×3 layer.
+The 1×1 “unsqueeze” restores the full representational capacity.
+Overall, the block has three convolutions but less cost than naively stacking two 3×3 layers at full width.
+
+The expansion factor in a ResNet Bottleneck block is a multiplier that determines how many more channels the output feature map will have compared to the input feature map within that block. Specifically, it's the factor by which the number of channels is increased in the final 1x1 convolution of the bottleneck.
+In the common ResNet architectures (like ResNet-50, ResNet-101, ResNet-152), the expansion factor is 4.
+
+So only for the first convolution we squeeze the data so that it is faster to convulate and then in second layer we unsqueeze it again by the expansion factor so that its same as output channels.
+
+It's the factor by which the number of channels is expanded in the final 1x1 convolution to match the desired output channels, and often to match the input channels for the shortcut connection. This expansion is key to restoring the feature map's representational capacity after the initial channel reduction.

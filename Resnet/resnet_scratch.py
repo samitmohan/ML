@@ -1,7 +1,7 @@
-# Stage 1: Processes the input image and applies 3 residual blocks.
-# Stage 2: Applies 3 residual blocks.
-# Stage 3: Applies 6 residual blocks.
-# Stage 4: Applies 3 residual blocks.
+'''
+ResNet-34 with CIFAR-10 images
+Blocks : [3,3,6,3]
+'''
 from PIL import Image
 import numpy as np
 import torch
@@ -11,7 +11,9 @@ from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 from torch.optim import SGD
 from tqdm import tqdm  
+import os
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def data_loader(data_dir, batch_size, random_seed=42, valid_size=0.1, shuffle=True, test=False):
 
@@ -90,7 +92,7 @@ class ResidualBlock(nn.Module):
 
 
 class ResNet(nn.Module):
-    def __init__(self, block, layers, num_classes=1000):
+    def __init__(self, block, layers, num_classes=10):
         super(ResNet, self).__init__()
         self.in_channels = 64
         self.conv1 = nn.Sequential(
@@ -100,11 +102,13 @@ class ResNet(nn.Module):
         )
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         # 4 layers : 3, 3, 6, 3 residual blocks
+        
         self.layer0 = self._make_layer(block, 64, layers[0], stride=1)
         self.layer1 = self._make_layer(block, 128, layers[1], stride=2)
         self.layer2 = self._make_layer(block, 256, layers[2], stride=2)
         self.layer3 = self._make_layer(block, 512, layers[3], stride=2)
-        self.avgpool = nn.AvgPool2d(7, stride=1)
+        # self.avgpool = nn.AvgPool2d(7, stride=1)
+        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(512, num_classes)
 
     def _make_layer(self, block, channels, blocks, stride=1):
@@ -144,7 +148,14 @@ epochs = 20
 batch_size = 32
 learning_rate = 0.01
 
-model = ResNet(ResidualBlock, [3,4,6,3])
+model = ResNet(ResidualBlock, [3,4,6,3]).to(device)
+model_save_path = "resnet_scratch.pth"
+if os.path.exists(model_save_path):
+    try:
+        model.load_state_dict(torch.load(model_save_path, map_location=device))
+        print(f"Loaded pre-trained model from {model_save_path}")
+    except Exception as e:
+        print(f"Error loading model: {e}. Training from scratch.")
 
 loss_fn = nn.CrossEntropyLoss()
 optimiser = SGD(model.parameters(), lr=learning_rate, weight_decay=0.01, momentum=0.9)
@@ -164,6 +175,7 @@ for epoch in range(epochs):
     # Use tqdm for progress bar
     with tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs}", unit="batch") as t:
         for images, labels in t:
+            images, labels = images.to(device), labels.to(device)
             # forward pass
             outputs = model(images)
             loss = loss_fn(outputs, labels)
@@ -187,6 +199,7 @@ for epoch in range(epochs):
     with torch.no_grad():
         correct_valid, total_valid = 0, 0
         for images, labels in valid_loader:
+            images, labels = images.to(device), labels.to(device)
             outputs = model(images)
             _, predicted = torch.max(outputs.data, 1)
             total_valid += labels.size(0)
@@ -195,27 +208,46 @@ for epoch in range(epochs):
         valid_accuracy = 100 * correct_valid / total_valid
         print(f"Validation Accuracy: {valid_accuracy:.2f}%")
 
-# Image for Sultan
-image_path = "sultan.jpeg"
-preprocess = transforms.Compose([
-    transforms.Resize((224,224)),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2023, 0.1994, 0.2010])  
-])
-image = Image.open(image_path)
-input_tensor = preprocess(image).unsqueeze(0) # add batch dimension
+torch.save(model.state_dict(), model_save_path)
+print(f"Model saved")
 
-with torch.no_grad():
-    output = model(input_tensor)
-    prob = torch.softmax(output, dim=1) # logits -> prob
-    pred_class = torch.argmax(prob, dim=1).item() # get predicted class index
+image_path = "sultan.jpeg" 
+if os.path.exists(image_path):
+    try:
+        # CIFAR-10 class labels
+        class_labels = [
+            "airplane", "automobile", "bird", "cat", "deer",
+            "dog", "frog", "horse", "ship", "truck"
+        ]
+        
+        # Preprocessing for classification (should match training transforms for the model)
+        preprocess_single = transforms.Compose([
+            transforms.Resize((224, 224)), # Keep consistent with training resize
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2023, 0.1994, 0.2010])
+        ])
 
-class_labels = [
-    "airplane", "automobile", "bird", "cat", "deer",
-    "dog", "frog", "horse", "ship", "truck"
-]
-# with open("imagenet_classes.txt") as f:
-#     categories = [s.strip() for s in f.readlines()]
+        image = Image.open(image_path).convert("RGB")
+        input_tensor = preprocess_single(image).unsqueeze(0).to(device)
 
-predicted_label = class_labels[pred_class]
-print(f"Image is classified as : {predicted_label}")
+        with torch.no_grad():
+            output = model(input_tensor)
+            probabilities = torch.softmax(output, dim=1)
+            pred_class = torch.argmax(probabilities, dim=1).item()
+
+        predicted_label = class_labels[pred_class]
+        print(f"\nClassifying '{image_path}':")
+        print(f"The image is classified as: {predicted_label}")
+        
+        top5_prob, top5_catid = torch.topk(probabilities, 5)
+        print("Top 5 predictions:")
+        for i in range(top5_prob.size(0)):
+            print(f"- {class_labels[top5_catid[i]]}: {top5_prob[i].item():.4f}")
+
+    except FileNotFoundError:
+        print(f"\nSample image '{image_path}' not found. Skipping single image classification.")
+    except Exception as e:
+        print(f"\nAn error occurred during single image classification: {e}")
+else:
+    print(f"\nSample image '{image_path}' not found. Skipping single image classification.")
+    print("Please ensure you have an image like 'sultan.jpeg' or similar, or update the image_path.")
