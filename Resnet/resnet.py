@@ -1,5 +1,5 @@
 '''
-Resnet50 for ImageNet + Support for basicblock(for resnet18,34)
+Resnet50 for ImageNet + Support for basicblock(for resnet18,34) from scratch
 Layers : [3,4,6,3]
 '''
 import os
