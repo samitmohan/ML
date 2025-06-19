@@ -13,7 +13,6 @@ def sigmoid(z: float) -> float:
     return 1 / (1 + np.exp(-z))
 
 def train_neuron(features: np.ndarray, labels: np.ndarray, initial_weights: np.ndarray, initial_bias: float, learning_rate: float, epochs: int) -> (np.ndarray, float, list[float]):
-	# Your code here
     weights = np.array(initial_weights)
     bias = initial_bias
     features = np.array(features)
@@ -32,6 +31,10 @@ def train_neuron(features: np.ndarray, labels: np.ndarray, initial_weights: np.n
         delta = error * sigmoid_derivative
         partial_derivative_error_wrt_weights = (2 / len(labels)) * np.dot(features.T, delta) 
         partial_derivative_error_wrt_bias = (2 / len(labels)) * np.mean(delta)
+
+        # can do direct
+        # weight_gradients = (2/len(labels)) * np.dot(features.T, errors * predictions * (1 - predictions))
+        # bias_gradient = (2/len(labels)) * np.sum(errors * predictions * (1 - predictions))
 
         # update
         weights -= learning_rate * partial_derivative_error_wrt_weights
