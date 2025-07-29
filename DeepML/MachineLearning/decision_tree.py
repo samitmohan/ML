@@ -113,3 +113,11 @@ def main():
     print(learn_decision_tree(examples, attributes, 'PlayTennis'))
 
 main()
+
+'''
+	1.	Calculate entropy for the dataset.
+	2.	For each attribute, calculate information gain.
+	3.	Select attribute with highest gain as a decision node.
+	4.	Partition the dataset based on attribute values.
+	5.	Recurse on each subset until base conditions are met.
+'''
