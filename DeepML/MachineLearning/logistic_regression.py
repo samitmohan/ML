@@ -21,7 +21,8 @@ import numpy as np
 def predict(X, weights, bias):
     forward_pass = np.dot(X, weights) + bias
     sigmoid = 1 / (1 + np.exp(-forward_pass))
-    return np.round(sigmoid).astype(int)
+    threshold = .5
+    return np.round(sigmoid >= threshold).astype(int)
 
 def main():
     print(predict(np.array([[1, 1], [2, 2], [-1, -1], [-2, -2]]), np.array([1, 1]), 0))
