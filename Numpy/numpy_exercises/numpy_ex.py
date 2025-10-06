@@ -1,3 +1,4 @@
+# https://github.com/rougier/numpy-100/blob/master/100_Numpy_exercises.md
 # numpy 100 exercises
 #### 1. Import the numpy package under the name `np` (★☆☆)
 import numpy as np
@@ -285,6 +286,59 @@ index = (np.abs(z - v)).argmin()
 print(z[index])
 
 #### 51. Create a structured array representing a position (x,y) and a color (r,g,b) (★★☆)
+arr = np.zeros(10, [('position', [('x', float, 1), ('y', float, 1)]), ('color', [('r', float, 1), ('g', float, 1), ('b', float, 1)])])
+# print(arr)
+
+
+#### 52. Consider a random vector with shape (100,2) representing coordinates, find point by point distances (★★☆)¶
+random_vec = np.random.random((100, 2))
+x, y = np.atleast_2d(random_vec[:, 0], random_vec[:, 1])
+
+dist = np.sqrt((x-x.T)**2 + (y-y.T)**2)
+print(f"Distance = {dist}")
+
+# much faster with scipy
+import scipy
+import scipy.spatial
+
+Z = np.random.random((10,2))
+D = scipy.spatial.distance.cdist(Z,Z)
+
+
+
+#### 53. How to convert a float (32 bits) array into an integer (32 bits) in place?
+z = np.arange(10, dtype=np.float32)
+z = z.astype(np.int32, copy=False)
+print(z)
+
+
+#### 54. How to read the following file? (★★☆)¶
+
+
+from io import StringIO
+
+# Fake file 
+s = StringIO("""1, 2, 3, 4, 5\n
+                6,  ,  , 7, 8\n
+                 ,  , 9,10,11\n""")
+Z = np.genfromtxt(s, delimiter=",", dtype=np.int16) # empty spaces get -1
+print(Z)
+
+
+#### 55. What is the equivalent of enumerate for numpy arrays? (★★☆)
+z = np.arange(9).reshape(3, 3)
+for index, value in np.ndenumerate(z):
+    print(index, value)
+
+for index in np.ndindex(z.shape):
+    print(index, z[index])
+
+#### 56. Generate a generic 2D Gaussian-like array (★★☆)¶
+
+
+
+
+
 
 
 
