@@ -334,55 +334,5 @@ for index in np.ndindex(z.shape):
     print(index, z[index])
 
 #### 56. Generate a generic 2D Gaussian-like array (★★☆)¶
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                         
 
