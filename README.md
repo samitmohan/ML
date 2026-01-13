@@ -1,1 +1,1 @@
-Learning deep learning/ml from scratch 
+learning how to map the world to machines
