@@ -8,8 +8,6 @@ import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 
 
-
-
 class NeuralNetwork(torch.nn.Module):
     def __init__(self, num_inputs, num_outputs):
         super(NeuralNetwork, self).__init__()

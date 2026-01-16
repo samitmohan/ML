@@ -9,6 +9,7 @@ from torch.autograd import grad
 
 # -- tensor -- 
 
+
 tensor0d = torch.tensor(1) # scalar
 tensor1d = torch.tensor([1,2,3]) # vector
 tensor2d = torch.tensor([[1, 2], [3, 4]]) # matrix
