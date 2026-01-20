@@ -1,4 +1,5 @@
 # https://www.deep-ml.com/problems/218
+
 from typing import Callable
 import numpy as np
 
