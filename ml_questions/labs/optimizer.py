@@ -36,10 +36,10 @@ class MyOptimizer(Optimizer):
                 grad = p.grad
                 state = self.state[p]
                 if 'velocity' not in state:
-                    state['vecocity'] = torch.zeros_like(p)
+                    state['velocity'] = torch.zeros_like(p)
                 v = state['velocity']
 
                 v.mul_(momentum).add_(grad)
-                p.add(v, alpha=-lr)
+                p.add_(v, alpha=-lr)
 
         return loss

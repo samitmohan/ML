@@ -18,7 +18,6 @@ def self_attention(Q, K, V):
     attn_logits = softmax(attn_logits)
     attention_output = attn_logits @ V
 
-    
-	return attention_output
+    return attention_output
 
 

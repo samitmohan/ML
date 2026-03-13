@@ -29,7 +29,7 @@ class KNNClassifier:
         print(f"KNNClassifier fitted with {x.shape[0]} samples and {x.shape[1]} features.")
 
     def euclid_dist(self, x1, x2):
-        return np.sqrt(np.sum(x1-x2)**2)
+        return np.sqrt(np.sum((x1-x2)**2))
 
     def predict_new(self, x_new):
         dist = [self.euclid_dist(x_new, x_train) for x_train in self.x_train]

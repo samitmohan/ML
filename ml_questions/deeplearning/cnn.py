@@ -17,16 +17,16 @@ def train_simple_cnn_with_backprop(X, y, epochs, learning_rate, kernel_size=3, n
     num_classes = y.shape[1]
 
     weights = np.random.randn(kernel_size, kernel_size, num_filters) * 0.01
-    biases = np.zeroes(num_filters)
+    biases = np.zeros(num_filters)
     output_height = ht - kernel_size + 1
     output_width = width - kernel_size + 1
     flattened_size = output_height * output_width * num_filters
     weights_dense = np.random.randn(flattened_size, num_classes) * 0.01
-    bias_dense = np.zeroes(num_classes)
+    bias_dense = np.zeros(num_classes)
     for epoch in range(epochs):
         # batch size = 1 for SGD
         for i in range(n_samples): 
-            z = np.zeroes((output_height, output_width, num_filters))
+            z = np.zeros((output_height, output_width, num_filters))
             for k in range(num_filters):
                 for p in range(output_height):
                     for q in range(output_width):
