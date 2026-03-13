@@ -1,5 +1,5 @@
 # https://www.deep-ml.com/labs/2
-import torch, torch.nn as nn
+import torch.nn as nn
 
 def build_model() -> nn.Module:
     class TinyNet(nn.Module):

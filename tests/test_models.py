@@ -1,6 +1,5 @@
 import numpy as np
 import torch
-import pytest
 
 from algorithms.deeplearning.batch_normalization import batch_normalization
 

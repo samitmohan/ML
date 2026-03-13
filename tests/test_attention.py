@@ -1,10 +1,7 @@
 import numpy as np
-import pytest
 
 from algorithms.attention.self_attention import (
     softmax as sa_softmax,
-    compute_qkv as sa_compute_qkv,
-    self_attention as sa_self_attention,
 )
 from algorithms.attention.mha import (
     compute_qkv,

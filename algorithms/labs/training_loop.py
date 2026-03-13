@@ -3,7 +3,6 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import torch.nn.functional as F
 
 def train_model(model, X_train, y_train, X_val, y_val, epochs, batch_size, lr):
     optimizer = optim.Adam(model.parameters(), lr=lr)

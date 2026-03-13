@@ -207,7 +207,7 @@ if __name__ == "__main__":
             print(f"Validation Accuracy: {valid_accuracy:.2f}%")
 
     torch.save(model.state_dict(), model_save_path)
-    print(f"Model saved")
+    print("Model saved")
 
     image_path = "sultan.jpeg"
     if os.path.exists(image_path):

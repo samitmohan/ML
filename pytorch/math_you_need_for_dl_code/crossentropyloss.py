@@ -21,7 +21,6 @@ It answers:
 '''
 import torch
 
-import torch
 
 def main():
     logits = torch.tensor([[2.0, 1.0, 0.1]])  # (batch, num_classes)

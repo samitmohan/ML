@@ -39,7 +39,7 @@ good(d_model,1) + boy(d_model,1) = final position vector = (d_model, 1)
 After this you can add this position embedding to your original input vector tokens and pass it to attention:
 embeddings = token_embeddings + sinusoidal_pos_enc(seq_len, d_model)[:seq_len]
 '''
-import torch, math
+import torch
 
 def sinusoidal_pos_enc(seq_len, d_model):
     pos = torch.arange(seq_len).unsqueeze(1)

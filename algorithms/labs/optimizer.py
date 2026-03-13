@@ -1,6 +1,5 @@
 # https://www.deep-ml.com/labs/3
 
-import math
 import torch
 from torch.optim.optimizer import Optimizer
 

@@ -1,4 +1,3 @@
-from collections import Counter
 
 def confusion_matrix(data):
     """

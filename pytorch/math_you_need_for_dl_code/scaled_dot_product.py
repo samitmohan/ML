@@ -64,9 +64,7 @@ Linear
 
 '''
 # How is this implemented:
-import torch
 import math
-import torch.nn.functional as F
 
 def scaled_dot_product_attention( Q, K, V, attn_mask=None, dropout_p=0.0, is_causal=False, training=True):
     # shape: Q, K, V: (batch, heads, seq_len, head_dim)
@@ -148,7 +146,6 @@ The final representation of "it" is then updated to include the relevant context
 
 # Another simpler implementation
 # attention.py
-import torch, math
 def scaled_dot_product_attention(Q, K, V, mask=None):
     # Q,K,V: (batch, heads, seq_len, d_k)
     scores = Q @ K.transpose(-2,-1) / math.sqrt(Q.size(-1))

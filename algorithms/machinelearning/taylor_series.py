@@ -1,6 +1,5 @@
 # https://www.deep-ml.com/problems/310?returnTo=paths
 
-import numpy as np
 from math import factorial
 
 def taylor_approximation(func_name: str, x: float, n_terms: int) -> float:

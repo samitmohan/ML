@@ -1,7 +1,6 @@
 # https://www.deep-ml.com/labs/12?returnTo=paths
 
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 
 def train_step(model, x_batch, y_batch, lr):

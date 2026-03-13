@@ -1,10 +1,7 @@
-import urllib.request
 import torch
-import numpy as np
 from PIL import Image
 from torchvision import transforms
 import torch.nn.functional as F
-import matplotlib.pyplot as plt
 
 model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet18', pretrained=True)
 model.eval()  

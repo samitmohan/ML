@@ -1,4 +1,3 @@
-import pytest
 from algorithms.deeplearning.autograd import Value
 
 
