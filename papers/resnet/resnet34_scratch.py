@@ -55,10 +55,6 @@ def data_loader(data_dir, batch_size, random_seed=42, valid_size=0.1, shuffle=Tr
 
     return (train_loader, valid_loader)
 
-train_loader, valid_loader = data_loader(data_dir='./data', batch_size=64)
-test_loader = data_loader(data_dir='./data', batch_size=64, test=True)
-
-
 class ResidualBlock(nn.Module):
     ''' One Residual Block : forward pass '''
 
@@ -143,111 +139,113 @@ class ResNet(nn.Module):
         return x
 
 
-num_classes = 10
-epochs = 20
-batch_size = 32
-learning_rate = 0.01
+if __name__ == "__main__":
+    train_loader, valid_loader = data_loader(data_dir='./data', batch_size=64)
+    test_loader = data_loader(data_dir='./data', batch_size=64, test=True)
 
-model = ResNet(ResidualBlock, [3,4,6,3]).to(device)
-model_save_path = "resnet_scratch.pth"
-if os.path.exists(model_save_path):
-    try:
-        model.load_state_dict(torch.load(model_save_path, map_location=device))
-        print(f"Loaded pre-trained model from {model_save_path}")
-    except Exception as e:
-        print(f"Error loading model: {e}. Training from scratch.")
+    num_classes = 10
+    epochs = 20
+    batch_size = 32
+    learning_rate = 0.01
 
-loss_fn = nn.CrossEntropyLoss()
-optimiser = SGD(model.parameters(), lr=learning_rate, weight_decay=0.01, momentum=0.9)
-total_step = len(train_loader)
+    model = ResNet(ResidualBlock, [3,4,6,3]).to(device)
+    model_save_path = "resnet_scratch.pth"
+    if os.path.exists(model_save_path):
+        try:
+            model.load_state_dict(torch.load(model_save_path, map_location=device))
+            print(f"Loaded pre-trained model from {model_save_path}")
+        except Exception as e:
+            print(f"Error loading model: {e}. Training from scratch.")
 
+    loss_fn = nn.CrossEntropyLoss()
+    optimiser = SGD(model.parameters(), lr=learning_rate, weight_decay=0.01, momentum=0.9)
+    total_step = len(train_loader)
 
+    # Load images in batches using train_loader for every epoch
+    # Predict on labels and calculate loss b/w predictions and ground truth using loss fn
+    # loss.backward(), update weights, optimiser.step()
+    # Test model on validation set.
+    for epoch in range(epochs):
+        model.train()
+        epoch_loss = 0
+        correct_train, total_train = 0, 0
 
-# Load images in batches using train_loader for every epoch
-# Predict on labels and calculate loss b/w predictions and ground truth using loss fn
-# loss.backward(), update weights, optimiser.step() 
-# Test model on validation set.
-for epoch in range(epochs):
-    model.train()
-    epoch_loss = 0
-    correct_train, total_train = 0, 0
+        # Use tqdm for progress bar
+        with tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs}", unit="batch") as t:
+            for images, labels in t:
+                images, labels = images.to(device), labels.to(device)
+                # forward pass
+                outputs = model(images)
+                loss = loss_fn(outputs, labels)
+                # backward pass
+                optimiser.zero_grad()
+                loss.backward()
+                optimiser.step()
 
-    # Use tqdm for progress bar
-    with tqdm(train_loader, desc=f"Epoch {epoch+1}/{epochs}", unit="batch") as t:
-        for images, labels in t:
-            images, labels = images.to(device), labels.to(device)
-            # forward pass
-            outputs = model(images)
-            loss = loss_fn(outputs, labels)
-            # backward pass
-            optimiser.zero_grad()
-            loss.backward()
-            optimiser.step()
+                # Update progress bar
+                epoch_loss += loss.item()
+                _, predicted = torch.max(outputs.data, 1)
+                total_train += labels.size(0)
+                correct_train += (predicted == labels).sum().item()
+                t.set_postfix(loss=loss.item())
 
-            # Update progress bar
-            epoch_loss += loss.item()
-            _, predicted = torch.max(outputs.data, 1)
-            total_train += labels.size(0)
-            correct_train += (predicted == labels).sum().item()
-            t.set_postfix(loss=loss.item())
+        train_accuracy = 100 * correct_train / total_train
+        print(f"Epoch [{epoch+1}/{epochs}], Loss: {epoch_loss:.4f}, Training Accuracy: {train_accuracy:.2f}%")
 
-    train_accuracy = 100 * correct_train / total_train
-    print(f"Epoch [{epoch+1}/{epochs}], Loss: {epoch_loss:.4f}, Training Accuracy: {train_accuracy:.2f}%")
-
-    # Validation accuracy
-    model.eval()
-    with torch.no_grad():
-        correct_valid, total_valid = 0, 0
-        for images, labels in valid_loader:
-            images, labels = images.to(device), labels.to(device)
-            outputs = model(images)
-            _, predicted = torch.max(outputs.data, 1)
-            total_valid += labels.size(0)
-            correct_valid += (predicted == labels).sum().item()
-
-        valid_accuracy = 100 * correct_valid / total_valid
-        print(f"Validation Accuracy: {valid_accuracy:.2f}%")
-
-torch.save(model.state_dict(), model_save_path)
-print(f"Model saved")
-
-image_path = "sultan.jpeg" 
-if os.path.exists(image_path):
-    try:
-        # CIFAR-10 class labels
-        class_labels = [
-            "airplane", "automobile", "bird", "cat", "deer",
-            "dog", "frog", "horse", "ship", "truck"
-        ]
-        
-        # Preprocessing for classification (should match training transforms for the model)
-        preprocess_single = transforms.Compose([
-            transforms.Resize((224, 224)), # Keep consistent with training resize
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2023, 0.1994, 0.2010])
-        ])
-
-        image = Image.open(image_path).convert("RGB")
-        input_tensor = preprocess_single(image).unsqueeze(0).to(device)
-
+        # Validation accuracy
+        model.eval()
         with torch.no_grad():
-            output = model(input_tensor)
-            probabilities = torch.softmax(output, dim=1)
-            pred_class = torch.argmax(probabilities, dim=1).item()
+            correct_valid, total_valid = 0, 0
+            for images, labels in valid_loader:
+                images, labels = images.to(device), labels.to(device)
+                outputs = model(images)
+                _, predicted = torch.max(outputs.data, 1)
+                total_valid += labels.size(0)
+                correct_valid += (predicted == labels).sum().item()
 
-        predicted_label = class_labels[pred_class]
-        print(f"\nClassifying '{image_path}':")
-        print(f"The image is classified as: {predicted_label}")
-        
-        top5_prob, top5_catid = torch.topk(probabilities, 5)
-        print("Top 5 predictions:")
-        for i in range(top5_prob.size(0)):
-            print(f"- {class_labels[top5_catid[i]]}: {top5_prob[i].item():.4f}")
+            valid_accuracy = 100 * correct_valid / total_valid
+            print(f"Validation Accuracy: {valid_accuracy:.2f}%")
 
-    except FileNotFoundError:
+    torch.save(model.state_dict(), model_save_path)
+    print(f"Model saved")
+
+    image_path = "sultan.jpeg"
+    if os.path.exists(image_path):
+        try:
+            # CIFAR-10 class labels
+            class_labels = [
+                "airplane", "automobile", "bird", "cat", "deer",
+                "dog", "frog", "horse", "ship", "truck"
+            ]
+
+            # Preprocessing for classification (should match training transforms for the model)
+            preprocess_single = transforms.Compose([
+                transforms.Resize((224, 224)), # Keep consistent with training resize
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2023, 0.1994, 0.2010])
+            ])
+
+            image = Image.open(image_path).convert("RGB")
+            input_tensor = preprocess_single(image).unsqueeze(0).to(device)
+
+            with torch.no_grad():
+                output = model(input_tensor)
+                probabilities = torch.softmax(output, dim=1)
+                pred_class = torch.argmax(probabilities, dim=1).item()
+
+            predicted_label = class_labels[pred_class]
+            print(f"\nClassifying '{image_path}':")
+            print(f"The image is classified as: {predicted_label}")
+
+            top5_prob, top5_catid = torch.topk(probabilities, 5)
+            print("Top 5 predictions:")
+            for i in range(top5_prob.size(0)):
+                print(f"- {class_labels[top5_catid[i]]}: {top5_prob[i].item():.4f}")
+
+        except FileNotFoundError:
+            print(f"\nSample image '{image_path}' not found. Skipping single image classification.")
+        except Exception as e:
+            print(f"\nAn error occurred during single image classification: {e}")
+    else:
         print(f"\nSample image '{image_path}' not found. Skipping single image classification.")
-    except Exception as e:
-        print(f"\nAn error occurred during single image classification: {e}")
-else:
-    print(f"\nSample image '{image_path}' not found. Skipping single image classification.")
-    print("Please ensure you have an image like 'sultan.jpeg' or similar, or update the image_path.")
+        print("Please ensure you have an image like 'sultan.jpeg' or similar, or update the image_path.")
