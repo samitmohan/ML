@@ -1,0 +1,25 @@
+[project]
+name = "ml-from-scratch"
+version = "0.1.0"
+description = "From-scratch implementations of ML algorithms, neural networks, and transformer architectures"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "torch",
+    "torchvision",
+    "scikit-learn",
+    "matplotlib",
+    "tqdm",
+    "Pillow",
+]
+
+[project.optional-dependencies]
+tensorflow = ["tensorflow"]
+dev = ["pytest", "ruff"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 120
