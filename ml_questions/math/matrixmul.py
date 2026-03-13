@@ -23,3 +23,6 @@ def matrixmulNumpy(a, b):
         return -1
     return (a @ b).tolist()
     # return np.matmul(A,B).tolist()
+
+
+
