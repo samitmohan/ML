@@ -16,7 +16,7 @@ def softmax(x, axis = -1):
     return exp / np.sum(exp, axis=axis, keepdims=True)
 
 def self_attention(Q: np.ndarray, K: np.ndarray, V: np.ndarray) -> np.ndarray:
-    dk = Q.shape[1] # seq_len, d_k (we want this)
+    dk = Q.shape[-1]
     scores = (Q @ K.T) / np.sqrt(dk)
     attn_weights = softmax(scores, axis=-1)
     output = attn_weights @ V

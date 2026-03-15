@@ -2,7 +2,7 @@
 
 # mean and variance of the activations are calculated for each layer separately, and then the activations are scaled and shifted to have a standard normal distribution (mean of 0 and variance of 1).
 
-# y_i = gamma * (x_i - mean) / std_dev + error + beta where gamma and beta are learnable parameters 
+# y_i = gamma * (x_i - mean) / (std_dev + epsilon) + beta where gamma and beta are learnable parameters
 
 '''
 Implement a function to perform Layer Normalization on an input tensor. 
@@ -31,5 +31,6 @@ def main():
     beta = np.zeros(3).reshape(1, 1, -1)
     print(layer_normalization(X, gamma, beta))
 
-main()
+if __name__ == "__main__":
+    main()
 

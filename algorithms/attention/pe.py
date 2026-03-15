@@ -3,8 +3,9 @@
 import numpy as np
 
 def pos_encoding(position: int, d_model: int):
-    if position == 0 or d_model <=0: return -1
-    # even idices use sine, odd use cosine
+    if position == 0 or d_model <= 0:
+        raise ValueError(f"position must be > 0 and d_model must be > 0, got position={position}, d_model={d_model}")
+    # even indices use sine, odd use cosine
     # for posn pos and feature index i 
     # if i = even, op = sin(angle(pos,i)) else cos(angle(pos, i))
     
@@ -21,9 +22,8 @@ def pos_encoding(position: int, d_model: int):
     pos_encoding[:, 1::2] = np.cos(angle_rads[:, 1::2])
 
 
-    pos_encoding = pos_encoding[np.newaxis, ...] # add dim (1, posn, d_model)
-    pos_encoding = np.float16(pos_encoding)
-    return pos_encoding # shape of tensor: (1, position, d_model)
+    pos_encoding = pos_encoding[np.newaxis, ...]  # (1, position, d_model)
+    return pos_encoding
 
 
 def main():
@@ -31,5 +31,6 @@ def main():
     d_model = 8
     print(pos_encoding(position, d_model))
 
-main()
+if __name__ == "__main__":
+    main()
 
